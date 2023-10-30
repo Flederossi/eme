@@ -5,8 +5,12 @@
 
 `eme` is a minimal, linear, single-header parser and evaluation engine for simple math expressions. It supports standard mathematical operations such as addition, subtraction, multiplication and division as well as the priority rules.
 
+<br>
+
 ## Usage
 Just include [eme.h](https://github.com/Flederossi/eme/blob/main/src/include/eme.h) in your project and you are ready to go!
+
+<br>
 
 ## Basic Example
 ```c
