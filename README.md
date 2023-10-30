@@ -27,3 +27,6 @@ int main(void){
 ```
 47.930000
 ```
+
+## Usage
+Just include [eme.h]() in your project and you are ready to go!
