@@ -15,9 +15,8 @@ int main(void){
 	int err;
 	double res = eme_calc("", &err);
 
-  if (err < 0) return 1;
-
-  printf("%f\n", res);
+	if (err < 0) return 1;
+	printf("%f\n", res);
 
 	return 0;
 }
