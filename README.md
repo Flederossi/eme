@@ -13,11 +13,17 @@
 
 int main(void){
 	int err;
-	double res = eme_calc("", &err);
+	double res = eme_calc("5.43 + 5 * 5 + (2 ^ 4 + 1.5)", &err);
 
 	if (err < 0) return 1;
 	printf("%f\n", res);
 
 	return 0;
 }
+```
+
+### Output
+
+```
+47.930000
 ```
