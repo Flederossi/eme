@@ -62,7 +62,7 @@ The error is set to -1 and the output to 0, if an invalid expression is detected
 <br>
 
 ## REPL
-To test ´eme´ in your terminal, you can open a simple repl (after cloning the repo) by running:
+To test `eme` in your terminal, you can open a simple repl (after cloning the repo) by running:
 
 ```sh
 make repl
