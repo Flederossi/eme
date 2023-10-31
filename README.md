@@ -8,7 +8,7 @@
 ## Features
 - Written in pure C99
 - Single-header
-- Supports the standard math operators (`+`, `-`, `*`, `/`, `^`)
+- Supports the standard math operators (`+`, `-`, `*`, `/`, `^`, `%`)
 - Implements standard precedence of operators
 - Checks for invalid expressions
 
