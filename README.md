@@ -38,8 +38,8 @@ int main(void){
 <br>
 
 ## API
-The function `eme_calc` takes two arguments:
-- the expression (```c char * ```)
-- the error (```c int * ```)
+The function `double eme_calc` takes two arguments:
+- the expression (`char *`)
+- the error (`int *`)
 
 The error is set to -1 and the output to 0 if an invalid expression is detected. Otherwise the error is 0 and the output is the calculated result.
