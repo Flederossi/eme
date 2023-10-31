@@ -5,7 +5,16 @@
 #include <strings.h>
 #include <math.h>
 
-#include <stdio.h>
+/* --- DEFINITION --- */
+
+double eme_add(double a, double b);
+double eme_sub(double a, double b);
+double eme_mul(double a, double b);
+double eme_div(double a, double b);
+double eme_pow(double a, double b);
+double eme_mod(double a, double b);
+int eme_tok_type(char c);
+double eme_eval(char *expr, int *err);
 
 enum EME_TOKEN_TYPE {
 	EME_TOKEN_TYPE_NUM,
@@ -25,6 +34,8 @@ typedef struct _eme_opr {
 	double (*fun)(double, double);
 } eme_opr;
 
+/* --- IMPLEMENTATION --- */
+
 double eme_add(double a, double b) { return a + b; }
 double eme_sub(double a, double b) { return a - b; }
 double eme_mul(double a, double b) { return a * b; }
@@ -37,9 +48,6 @@ const eme_opr operators[] = {
 	{'*', 2, &eme_mul}, {'/', 2, &eme_div},
 	{'^', 3, &eme_pow}, {'%', 3, &eme_mod},
 };
-
-int eme_tok_type(char c);
-double eme_eval(char *expr, int *err);
 
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
@@ -74,9 +82,8 @@ double eme_eval(char *expr, int *err){
 			t.type = EME_TOKEN_TYPE_NUM; t.value = n;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
 			t.type = EME_TOKEN_TYPE_OPR; t.value = c;
-			for (int i = 0; i < (int)(sizeof(operators) / sizeof(eme_opr)); i++)
-				if (c == operators[i].desc)
-					t.prio = o_bra * 4 + operators[i].prio;
+			for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
+				if (c == operators[j].desc) t.prio = o_bra * 4 + operators[j].prio;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
