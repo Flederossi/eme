@@ -18,7 +18,7 @@ typedef struct _eme_tok {
 } eme_tok;
 
 int eme_tok_type(char c);
-double eme_calc(char *expr, int *err);
+double eme_eval(char *expr, int *err);
 
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
@@ -27,7 +27,7 @@ int eme_tok_type(char c){
 	return EME_TOKEN_TYPE_NUL;
 }
 
-double eme_calc(char *expr, int *err){
+double eme_eval(char *expr, int *err){
 
 	/* --- PARSER --- */
 	
