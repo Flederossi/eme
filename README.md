@@ -3,7 +3,7 @@
 
 --- 
 
-`eme` is a minimal, linear, single-header parser and evaluation engine for simple math expressions. It supports standard mathematical operations such as addition, subtraction, multiplication and division as well as the priority rules. It can be used to evaluate math expressions at runtime.
+`eme` is a minimal, linear, single-header parser and evaluation engine for simple math expressions. It supports standard mathematical operations such as addition, subtraction, multiplication and division as well as the priority rules. It is especially designed to evaluate math expressions at runtime.
 
 <br>
 
