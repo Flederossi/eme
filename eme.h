@@ -49,6 +49,8 @@ const eme_opr operators[] = {
 	{'^', 3, &eme_pow}, {'%', 3, &eme_mod},
 };
 
+const int bra_prio = 4;
+
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
 	if (c == '(' || c == ')') return EME_TOKEN_TYPE_BRA;
@@ -83,7 +85,7 @@ double eme_eval(char *expr, int *err){
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
 			t.type = EME_TOKEN_TYPE_OPR; t.value = c;
 			for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
-				if (c == operators[j].desc) t.prio = o_bra * 4 + operators[j].prio;
+				if (c == operators[j].desc) t.prio = o_bra * bra_prio + operators[j].prio;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
