@@ -7,7 +7,7 @@ int main(void){
 	double res;
 	char in[1024];
 
-	printf("\n");
+	printf("\n[eme-repl started]\n\n");
 	for (;;){
 		printf("> ");
 		fgets(in, sizeof(in) * sizeof(char), stdin);
