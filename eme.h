@@ -47,7 +47,7 @@ double eme_mod(double a, double b) { return a - (int)(a / b) * b; }
 const eme_opr operators[] = {
 	{'+', 1, &eme_add}, {'-', 1, &eme_sub},
 	{'*', 2, &eme_mul}, {'/', 2, &eme_div},
-	{'^', 3, &eme_pow}, {'%', 3, &eme_mod},
+	{'^', 3, &eme_pow}, {'%', 2, &eme_mod},
 };
 
 const int bra_prio = 4;
