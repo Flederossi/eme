@@ -7,8 +7,8 @@
 
 <br>
 
-## Usage
-Just include [eme.h](https://github.com/Flederossi/eme/blob/main/src/include/eme.h) in your project and you are ready to go!
+## Building
+Just add [eme.h](https://github.com/Flederossi/eme/blob/main/src/include/eme.h) to your project and you are ready to go!
 
 <br>
 
