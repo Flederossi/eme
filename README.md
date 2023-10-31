@@ -20,9 +20,14 @@ Just add [eme.h](https://github.com/Flederossi/eme/blob/main/src/include/eme.h) 
 
 int main(void){
 	int err;
+
+	// Calculate the result of the expression 5.43 + 5 * 5 + (2 ^ 4 + 1.5)
 	double res = eme_calc("5.43 + 5 * 5 + (2 ^ 4 + 1.5)", &err);
 
+	// Check if expression is invalid
 	if (err < 0) return 1;
+
+	// Output the result
 	printf("%f\n", res);
 
 	return 0;
