@@ -34,3 +34,12 @@ int main(void){
 ```
 47.930000
 ```
+
+<br>
+
+## API
+The function `eme_calc` takes two arguments:
+- the expression (```c char * ```)
+- the error (```c int * ```)
+
+The error is set to -1 and the output to 0 if an invalid expression is detected. Otherwise the error is 0 and the output is the calculated result.
