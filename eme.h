@@ -51,12 +51,10 @@ double eme_eval(char *expr, int *err){
 				if (j == (int)strlen(expr) - 1) i = j;
 			}
 			t.type = EME_TOKEN_TYPE_NUM; t.value = n;
-		}
-		else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
+		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
 			t.type = EME_TOKEN_TYPE_OPR; t.value = c;
 			t.prio = o_bra * 4 + (c == '+' || c == '-' ? 1 : (c == '*' || c == '/' ? 2 : 3));
-		}
-		else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
+		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
 		}
