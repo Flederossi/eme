@@ -58,3 +58,14 @@ The function `double eme_eval` takes two arguments:
 - the error (`int *`)
 
 The error is set to -1 and the output to 0, if an invalid expression is detected. Otherwise the error is set to 0 and the output is the calculated result.
+
+<br>
+
+## REPL
+To test ´eme´ in your terminal, you can open a simple repl (after cloning the repo) by running:
+
+```sh
+make repl
+```
+
+This lets you input math expressions like a calculator.
