@@ -14,7 +14,7 @@ Just add [eme.h](https://github.com/Flederossi/eme/blob/main/src/include/eme.h) 
 
 ## Basic Example
 
-> This example can also be found [here]().
+> This example can also be found [here](https://github.com/Flederossi/eme/blob/main/example.c).
 
 ```c
 #include <stdio.h>
