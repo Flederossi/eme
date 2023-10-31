@@ -65,7 +65,7 @@ double eme_eval(char *expr, int *err){
 	
 	char c;
 	eme_tok *tokens = malloc(0);
-	int tok_num = 0, o_bra = 0, sign = 1;
+	int tok_num = 0, o_bra = 0;
 	
 	for (int i = 0; i < (int)strlen(expr); i++){
 		c = expr[i];
@@ -82,19 +82,17 @@ double eme_eval(char *expr, int *err){
 				else{ i = j - 1; break; }
 				if (j == (int)strlen(expr) - 1) i = j;
 			}
-			t.type = EME_TOKEN_TYPE_NUM; t.value = n * sign;
-			sign = 1;
+			t.type = EME_TOKEN_TYPE_NUM; t.value = n;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
-			sign = 1;
-			if ((c == '+' || c == '-') && (tok_num == 0 || (tokens[tok_num - 1].type != EME_TOKEN_TYPE_NUM && (tokens[tok_num - 1].type != EME_TOKEN_TYPE_BRA || tokens[tok_num - 1].value != ')'))))
-				sign = c == '+' ? 1 : -1;
-			else{
-				t.type = EME_TOKEN_TYPE_OPR; t.value = c;
-				for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
-					if (c == operators[j].desc) t.prio = o_bra * bra_prio + operators[j].prio;
+			if ((c == '+' || c == '-') && (tok_num == 0 || (tokens[tok_num - 1].type != EME_TOKEN_TYPE_NUM && (tokens[tok_num - 1].type != EME_TOKEN_TYPE_BRA || tokens[tok_num - 1].value != ')')))){
+				tokens = realloc(tokens, (tok_num + 1) * sizeof(eme_tok));
+				tokens[tok_num] = (eme_tok){.type = EME_TOKEN_TYPE_NUM, .value = 0};
+				tok_num++;
 			}
+			t.type = EME_TOKEN_TYPE_OPR; t.value = c;
+			for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
+				if (c == operators[j].desc) t.prio = o_bra * bra_prio + operators[j].prio;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
-			sign = 1;
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
 		}
