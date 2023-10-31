@@ -65,7 +65,7 @@ double eme_eval(char *expr, int *err){
 	
 	char c;
 	eme_tok *tokens = malloc(0);
-	int tok_num = 0, o_bra = 0;
+	int tok_num = 0, o_bra = 0, o_sign = 0, o_sign_bra = 0;
 	
 	for (int i = 0; i < (int)strlen(expr); i++){
 		c = expr[i];
@@ -82,12 +82,16 @@ double eme_eval(char *expr, int *err){
 				else{ i = j - 1; break; }
 				if (j == (int)strlen(expr) - 1) i = j;
 			}
+			if (o_sign == 1) o_sign = 2;
 			t.type = EME_TOKEN_TYPE_NUM; t.value = n;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
 			if ((c == '+' || c == '-') && (tok_num == 0 || (tokens[tok_num - 1].type != EME_TOKEN_TYPE_NUM && (tokens[tok_num - 1].type != EME_TOKEN_TYPE_BRA || tokens[tok_num - 1].value != ')')))){
-				tokens = realloc(tokens, (tok_num + 1) * sizeof(eme_tok));
-				tokens[tok_num] = (eme_tok){.type = EME_TOKEN_TYPE_NUM, .value = 0};
-				tok_num++;
+				tokens = realloc(tokens, (tok_num + 2) * sizeof(eme_tok));
+				tokens[tok_num] = (eme_tok){.type = EME_TOKEN_TYPE_BRA, .value = '('};
+				tokens[tok_num + 1] = (eme_tok){.type = EME_TOKEN_TYPE_NUM, .value = 0};
+				tok_num += 2;
+				o_sign = 1;
+				o_bra++;
 			}
 			t.type = EME_TOKEN_TYPE_OPR; t.value = c;
 			for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
@@ -95,11 +99,21 @@ double eme_eval(char *expr, int *err){
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
+			if (o_sign == 1) o_sign = 3;
+			if (o_sign == 3) o_sign_bra = c == '(' ? o_sign_bra + 1 : o_sign_bra - 1;
+			if (o_sign_bra == 0 && o_sign == 3) o_sign = 2;
 		}
 		if (t.type != EME_TOKEN_TYPE_NUL){
 			tokens = realloc(tokens, (tok_num + 1) * sizeof(eme_tok));
 			tokens[tok_num] = t;
 			tok_num++;
+		}
+		if (o_sign == 2){
+			tokens = realloc(tokens, (tok_num + 1) * sizeof(eme_tok));
+			tokens[tok_num] = (eme_tok){.type = EME_TOKEN_TYPE_BRA, .value = ')'};
+			tok_num ++;
+			o_sign = 0;
+			o_bra--;
 		}
 	}
 
