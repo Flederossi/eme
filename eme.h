@@ -41,7 +41,7 @@ double eme_sub(double a, double b) { return a - b; }
 double eme_mul(double a, double b) { return a * b; }
 double eme_div(double a, double b) { return a / b; }
 double eme_pow(double a, double b) { return pow(a, b); }
-double eme_mod(double a, double b) { return a / b; }
+double eme_mod(double a, double b) { return a - (int)(a / b) * b; }
 
 const eme_opr operators[] = {
 	{'+', 1, &eme_add}, {'-', 1, &eme_sub},
