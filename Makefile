@@ -1,10 +1,10 @@
 CFLAGS ?= -Wall -Wextra -std=c99
 
-test:
-	$(CC) src/*.c -o bin/test -I src/include -lm $(CFLAGS)
+example:
+	$(CC) *.c -o example -lm $(CFLAGS)
 
-run: test
-	./bin/test
+run: example
+	./example
 
 clean:
-	rm bin/test
+	rm example
