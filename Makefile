@@ -5,6 +5,11 @@ example: eme.h
 	./example
 	rm example
 
+test: eme.h
+	$(CC) test.c -o test -lm $(CFLAGS)
+	./test
+	rm test
+
 repl: eme.h
 	$(CC) repl.c -o repl -lm $(CFLAGS)
 	./repl
