@@ -1,7 +1,7 @@
 CFLAGS ?= -Wall -Wextra -std=c99
 
-example:
-	$(CC) *.c -o example -lm $(CFLAGS)
+example: eme.h
+	$(CC) example.c -o example -lm $(CFLAGS)
 
 run: example
 	./example

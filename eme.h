@@ -5,6 +5,8 @@
 #include <strings.h>
 #include <math.h>
 
+#include <stdio.h>
+
 enum EME_TOKEN_TYPE {
 	EME_TOKEN_TYPE_NUM,
 	EME_TOKEN_TYPE_OPR,
@@ -17,13 +19,32 @@ typedef struct _eme_tok {
 	double value;
 } eme_tok;
 
+typedef struct _eme_opr {
+	char desc;
+	int prio;
+	double (*fun)(double, double);
+} eme_opr;
+
+double eme_add(double a, double b) { return a + b; }
+double eme_sub(double a, double b) { return a - b; }
+double eme_mul(double a, double b) { return a * b; }
+double eme_div(double a, double b) { return a / b; }
+double eme_pow(double a, double b) { return pow(a, b); }
+double eme_mod(double a, double b) { return a / b; }
+
+const eme_opr operators[] = {
+	{'+', 1, &eme_add}, {'-', 1, &eme_sub},
+	{'*', 2, &eme_mul}, {'/', 2, &eme_div},
+	{'^', 3, &eme_pow}, {'%', 3, &eme_mod},
+};
+
 int eme_tok_type(char c);
 double eme_eval(char *expr, int *err);
 
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
-	if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^') return EME_TOKEN_TYPE_OPR;
 	if (c == '(' || c == ')') return EME_TOKEN_TYPE_BRA;
+	for (int i = 0; i < (int)(sizeof(operators) / sizeof(eme_opr)); i++) { if (c == operators[i].desc) return EME_TOKEN_TYPE_OPR; }
 	return EME_TOKEN_TYPE_NUL;
 }
 
@@ -46,14 +67,16 @@ double eme_eval(char *expr, int *err){
 				if (eme_tok_type(c) == EME_TOKEN_TYPE_NUM){
 					n = dou == 0 ? n * 10 + (c - '0') : n + (double)(c - '0') / dou_n;
 					dou_n = dou == 1 ? dou_n * 10 : dou_n;
-				} else if (c == '.' || c == ',') dou = 1;
+				} else if (c == '.') dou = 1;
 				else{ i = j - 1; break; }
 				if (j == (int)strlen(expr) - 1) i = j;
 			}
 			t.type = EME_TOKEN_TYPE_NUM; t.value = n;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
 			t.type = EME_TOKEN_TYPE_OPR; t.value = c;
-			t.prio = o_bra * 4 + (c == '+' || c == '-' ? 1 : (c == '*' || c == '/' ? 2 : 3));
+			for (int i = 0; i < (int)(sizeof(operators) / sizeof(eme_opr)); i++)
+				if (c == operators[i].desc)
+					t.prio = o_bra * 4 + operators[i].prio;
 		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
@@ -64,7 +87,7 @@ double eme_eval(char *expr, int *err){
 			tok_num++;
 		}
 	}
-	
+
 	/* --- VALIDATOR --- */
 
 	int valid = 1;
@@ -92,11 +115,9 @@ double eme_eval(char *expr, int *err){
 			eme_tok new_tok = (eme_tok){};
 			if (tokens[i].type == EME_TOKEN_TYPE_OPR && i > 0 && i < tok_num - 1 && tokens[i - 1].type == EME_TOKEN_TYPE_NUM && tokens[i + 1].type == EME_TOKEN_TYPE_NUM && tokens[i].prio == max_prio && op == 0){
 				new_tok.type = EME_TOKEN_TYPE_NUM;
-				if ((int)tokens[i].value == '+') new_tok.value = tokens[i - 1].value + tokens[i + 1].value;
-				if ((int)tokens[i].value == '-') new_tok.value = tokens[i - 1].value - tokens[i + 1].value;
-				if ((int)tokens[i].value == '*') new_tok.value = tokens[i - 1].value * tokens[i + 1].value;
-				if ((int)tokens[i].value == '/') new_tok.value = tokens[i - 1].value / tokens[i + 1].value;
-				if ((int)tokens[i].value == '^') new_tok.value = pow(new_tok.value = tokens[i - 1].value, tokens[i + 1].value);
+				for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
+					if (operators[j].desc == (int)tokens[i].value)
+						new_tok.value = operators[j].fun(tokens[i - 1].value, tokens[i + 1].value);
 				new_tokens[new_tok_num - 1] = new_tok;
 				i++; op = 1;
 			}else if (tokens[i].type == EME_TOKEN_TYPE_NUM && i > 0 && i < tok_num - 1 && tokens[i - 1].type == EME_TOKEN_TYPE_BRA && tokens[i + 1].type == EME_TOKEN_TYPE_BRA){
