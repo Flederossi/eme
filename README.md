@@ -24,7 +24,7 @@ Just add [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h) to your proj
 int main(void){
 	int err;
 
-	// Calculate the result of the expression 5.43 + 5 * 5 + (2 ^ 4 + 1.5)
+	// Evaluate the result of the expression 5.43 + 5 * 5 + (2 ^ 4 + 1.5)
 	double res = eme_calc("5.43 + 5 * 5 + (2 ^ 4 + 1.5)", &err);
 
 	// Check if expression is invalid
