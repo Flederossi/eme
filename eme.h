@@ -109,15 +109,9 @@ double eme_eval(char *expr, int *err){
 		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
-		}else{
-			for (int j = 0; j < (int)(sizeof(constants) / sizeof(eme_con)); j++){
-				if (constants[j].desc == c){
-					t.type = EME_TOKEN_TYPE_NUM;
-					t.value = constants[j].val;
-					break;
-				}
-			}
-		}
+		}else
+			for (int j = 0; j < (int)(sizeof(constants) / sizeof(eme_con)); j++)
+				if (constants[j].desc == c){ t.type = EME_TOKEN_TYPE_NUM; t.value = constants[j].val; break; }
 		if (t.type != EME_TOKEN_TYPE_NUL){
 			tokens = realloc(tokens, (tok_num + 1) * sizeof(eme_tok));
 			tokens[tok_num] = t;
