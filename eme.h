@@ -35,6 +35,11 @@ typedef struct _eme_opr {
 	double (*fun)(double, double);
 } eme_opr;
 
+typedef struct _eme_con {
+	char desc;
+	double val;
+} eme_con;
+
 /* --- IMPLEMENTATION --- */
 
 double eme_add(double a, double b) { return a + b; }
@@ -52,6 +57,10 @@ const eme_opr operators[] = {
 
 const int sign_prio = 4;
 const int bra_prio = 5;
+
+const eme_con constants[] = {
+	{'e', 2.71828183}, {'p', 3.14159265},
+};
 
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
@@ -84,7 +93,7 @@ double eme_eval(char *expr, int *err){
 				if (j == (int)strlen(expr) - 1) i = j;
 			}
 			t.type = EME_TOKEN_TYPE_NUM; t.value = n;
-		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
+		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_OPR){
 			if ((c == '+' || c == '-') && (tok_num == 0 || (tokens[tok_num - 1].type != EME_TOKEN_TYPE_NUM && (tokens[tok_num - 1].type != EME_TOKEN_TYPE_BRA || tokens[tok_num - 1].value != ')')))){
 				tokens = realloc(tokens, (tok_num + 2) * sizeof(eme_tok));
 				tokens[tok_num] = (eme_tok){.type = EME_TOKEN_TYPE_NUM, .value = (c == '+' ? 1 : -1)};
@@ -96,9 +105,17 @@ double eme_eval(char *expr, int *err){
 					if (c == operators[j].desc) t.prio = o_bra * bra_prio + operators[j].prio;
 
 			}
-		} else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
+		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
+		}else{
+			for (int j = 0; j < (int)(sizeof(constants) / sizeof(eme_con)); j++){
+				if (constants[j].desc == c){
+					t.type = EME_TOKEN_TYPE_NUM;
+					t.value = constants[j].val;
+					break;
+				}
+			}
 		}
 		if (t.type != EME_TOKEN_TYPE_NUL){
 			tokens = realloc(tokens, (tok_num + 1) * sizeof(eme_tok));
