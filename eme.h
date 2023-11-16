@@ -114,7 +114,7 @@ double eme_eval(char *expr, int *err){
 	if (tok_num > 0){
 		if (tokens[0].type == EME_TOKEN_TYPE_OPR || (tokens[0].type == EME_TOKEN_TYPE_BRA && tokens[0].value == ')')) valid = 0;
 		if (tokens[tok_num - 1].type == EME_TOKEN_TYPE_OPR || (tokens[tok_num - 1].type == EME_TOKEN_TYPE_BRA && tokens[tok_num - 1].value == '(')) valid = 0;
-	}
+	}else valid = 0;
 	for (int i = 0; i < tok_num - 1; i++){
 		int t1 = tokens[i].type, t2 = tokens[i + 1].type;
 		if (t1 == EME_TOKEN_TYPE_NUM && (t2 == EME_TOKEN_TYPE_NUM || (t2 == EME_TOKEN_TYPE_BRA && tokens[i + 1].value == '('))) valid = 0;
