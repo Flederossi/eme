@@ -10,7 +10,7 @@
 - Single-header
 - Supports the standard math operators (`+`, `-`, `*`, `/`, `^`, `%`)
 - Implements standard precedence of operators
-- Supports some standard math constants (`e` - Euler's number, `p` - PI)
+- Supports some standard math constants (`e` - Euler's number, `p` - PI, `t` - Golden ratio)
 - Checks for invalid expressions
 - Easy to add custom operators and constants
 

@@ -60,6 +60,7 @@ const int bra_prio = 5;
 
 const eme_con constants[] = {
 	{'e', 2.71828183}, {'p', 3.14159265},
+	{'t', 1.61803399},
 };
 
 int eme_tok_type(char c){
