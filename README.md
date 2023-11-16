@@ -10,7 +10,9 @@
 - Single-header
 - Supports the standard math operators (`+`, `-`, `*`, `/`, `^`, `%`)
 - Implements standard precedence of operators
+- Supports the some standard math constants (`e` - Euler's number, `p` - PI)
 - Checks for invalid expressions
+- Supports easy addition of new operators and constants
 
 <br>
 
@@ -58,6 +60,26 @@ The function `double eme_eval` takes two arguments:
 - the error (`int *`)
 
 The error is set to -1 and the output to 0, if an invalid expression is detected. Otherwise the error is set to 0 and the output is the calculated result.
+
+<br>
+
+## Add custom operators and constants
+Custom operators and constants can be added by including them in the corresponding arrays (`operators`, `constants`) directly in [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h).
+> Structure of an operator:
+```c
+typedef struct _eme_opr {
+	char desc;			// The character used as the operator
+	int prio;			// The priority used for precedence of operators
+	double (*fun)(double, double);	// The corresponding function pointer to execute the operation
+} eme_opr;
+```
+> Structure of a constant:
+```c
+typedef struct _eme_con {
+	char desc;			// The character used for the constant
+	double val;			// The value used for the constant
+} eme_con;
+```
 
 <br>
 
