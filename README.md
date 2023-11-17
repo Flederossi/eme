@@ -11,7 +11,7 @@
 - Supports standard math operators, constants and functions (All built-ins [here](#supported-built-ins))
 - Implements standard precedence of operators
 - Checks for invalid expressions
-- Easy to add custom operators, constants and functions at compile- and runtime
+- Easy to add custom operators, constants and functions at compiletime
 
 <br>
 
