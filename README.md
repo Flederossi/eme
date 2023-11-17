@@ -118,9 +118,19 @@ This lets you input math expressions like a calculator.
 ### Functions
 | Function | Description |
 | - | - |
+| `sqrt()` | Square root |
+| `abs()` | Absolute value |
 | `sin()`| Sine |
 | `cos()` | Cosine |
 | `tan()` | Tangent |
+| `asin()`| Arcsine |
+| `acos()` | Arccosine |
+| `atan()` | Arctangent |
+| `ln()` | Natural logarithm |
+| `exp()` | e to the power off |
+| `ceil()` | Round up |
+| `floor()` | Round down |
+
 
 <br>
 
