@@ -16,7 +16,8 @@
 - [Built-Ins](#supported-built-ins)
   - [Operators](#operators)
   - [Constants](#constants)
-  - [Functions](#functions)
+  - [Functions](#functions-1)
+- [Custom Objects](#add-custom-)
 
 <br>
 
