@@ -7,14 +7,6 @@
 
 /* --- DEFINITION --- */
 
-double eme_add(double a, double b);
-double eme_sub(double a, double b);
-double eme_mul(double a, double b);
-double eme_div(double a, double b);
-double eme_mod(double a, double b);
-int eme_tok_type(char c);
-double eme_eval(char *expr, int *err);
-
 enum EME_TOKEN_TYPE {
 	EME_TOKEN_TYPE_NUM,
 	EME_TOKEN_TYPE_OPR,
@@ -36,7 +28,7 @@ typedef struct _eme_opr {
 } eme_opr;
 
 typedef struct _eme_con {
-	char desc;
+	char *desc;
 	double val;
 } eme_con;
 
@@ -44,6 +36,19 @@ typedef struct _eme_fun {
 	char *desc;
 	double (*fun)(double);
 } eme_fun;
+
+typedef struct _eme_err {
+	int status;
+	char *msg;
+} eme_err;
+
+double eme_add(double a, double b);
+double eme_sub(double a, double b);
+double eme_mul(double a, double b);
+double eme_div(double a, double b);
+double eme_mod(double a, double b);
+int eme_tok_type(char c);
+double eme_eval(char *expr, eme_err *err);
 
 /* --- IMPLEMENTATION --- */
 
@@ -53,7 +58,7 @@ double eme_mul(double a, double b) { return a * b; }
 double eme_div(double a, double b) { return a / b; }
 double eme_mod(double a, double b) { return a - (int)(a / b) * b; }
 
-const eme_opr operators[] = {
+const eme_opr bi_operators[] = {
 	{'+', 1, &eme_add}, {'-', 1, &eme_sub},
 	{'*', 2, &eme_mul}, {'/', 2, &eme_div},
 	{'^', 3, &pow}, {'%', 2, &eme_mod},
@@ -61,12 +66,12 @@ const eme_opr operators[] = {
 
 const int max_prio = 3;
 
-const eme_con constants[] = {
-	{'e', 2.71828183}, {'p', 3.14159265},
-	{'t', 1.61803399},
+const eme_con bi_constants[] = {
+	{"E", 2.71828183}, {"PI", 3.14159265},
+	{"T", 1.61803399},
 };
 
-const eme_fun functions[] = {
+const eme_fun bi_functions[] = {
 	{"sin", &sin}, {"cos", &cos},
 	{"tan", &tan},
 };
@@ -78,12 +83,12 @@ const int bra_prio = max_prio + 3;
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
 	if (c == '(' || c == ')') return EME_TOKEN_TYPE_BRA;
-	for (int i = 0; i < (int)(sizeof(operators) / sizeof(eme_opr)); i++) { if (c == operators[i].desc) return EME_TOKEN_TYPE_OPR; }
+	for (int i = 0; i < (int)(sizeof(bi_operators) / sizeof(eme_opr)); i++) { if (c == bi_operators[i].desc) return EME_TOKEN_TYPE_OPR; }
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) return EME_TOKEN_TYPE_CHR;
 	return EME_TOKEN_TYPE_NUL;
 }
 
-double eme_eval(char *expr, int *err){
+double eme_eval(char *expr, eme_err *err){
 
 	/* --- PARSER --- */
 	
@@ -113,13 +118,14 @@ double eme_eval(char *expr, int *err){
 				// NUMBER SIGN
 				tokens = realloc(tokens, (tok_num + 2) * sizeof(eme_tok));
 				tokens[tok_num] = (eme_tok){.type = EME_TOKEN_TYPE_NUM, .value = (c == '+' ? 1 : -1)};
-				tokens[tok_num + 1] = (eme_tok){.type = EME_TOKEN_TYPE_OPR, .value = '*', .prio = o_bra * bra_prio + sign_prio};
+				tokens[tok_num + 1] = (eme_tok){.type = EME_TOKEN_TYPE_OPR, .prio = o_bra * bra_prio + sign_prio};
+				for (int j = 0; j < (int)(sizeof(bi_operators) / sizeof(eme_opr)); j++) if ('*' == bi_operators[j].desc) tokens[tok_num + 1].value = j;
 				tok_num += 2;
 			}else{
 				// OPERATOR
-				t.type = EME_TOKEN_TYPE_OPR; t.value = c;
-				for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
-					if (c == operators[j].desc) t.prio = o_bra * bra_prio + operators[j].prio;
+				t.type = EME_TOKEN_TYPE_OPR;
+				for (int j = 0; j < (int)(sizeof(bi_operators) / sizeof(eme_opr)); j++)
+					if (c == bi_operators[j].desc){ t.prio = o_bra * bra_prio + bi_operators[j].prio; t.value = j; break; };
 
 			}
 		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
@@ -127,26 +133,25 @@ double eme_eval(char *expr, int *err){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
 		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_CHR){
-			if (i == (int)strlen(expr) - 1 || eme_tok_type(expr[i + 1]) != EME_TOKEN_TYPE_CHR){
-				// CONSTANT
-				for (int j = 0; j < (int)(sizeof(constants) / sizeof(eme_con)); j++)
-					if (constants[j].desc == c){ t.type = EME_TOKEN_TYPE_NUM; t.value = constants[j].val; break; }
-			}else{
-				// FUNCTION
-				char *curr_str = malloc(sizeof(char));
-				curr_str[0] = c;
-				for (int j = i + 1; j < (int)strlen(expr); j++){
-					c = expr[j];
-					if (eme_tok_type(c) == EME_TOKEN_TYPE_CHR){
-						curr_str = realloc(curr_str, (strlen(curr_str) + 1) * sizeof(char));
-						curr_str[strlen(curr_str)] = c;
-					}else{ i = j - 1; break; }
-				}
-				curr_str = realloc(curr_str, (strlen(curr_str) + 1) * sizeof(char));
-				curr_str[strlen(curr_str)] = '\0';
-				for (int j = 0; j < (int)(sizeof(functions) / sizeof(eme_fun)); j++)
-					if (strcmp(functions[j].desc, curr_str) == 0){ t.type = EME_TOKEN_TYPE_FUN; t.prio = o_bra * bra_prio + fun_prio; t.value = j; break; }
+			char *curr_str = malloc(sizeof(char));
+			curr_str[0] = c;
+			for (int j = i + 1; j < (int)strlen(expr); j++){
+				c = expr[j];
+				if (eme_tok_type(c) == EME_TOKEN_TYPE_CHR){
+					curr_str = realloc(curr_str, (strlen(curr_str) + 1) * sizeof(char));
+					curr_str[strlen(curr_str)] = c;
+				}else{ i = j - 1; break; }
 			}
+			curr_str = realloc(curr_str, (strlen(curr_str) + 1) * sizeof(char));
+			curr_str[strlen(curr_str)] = '\0';
+			int found = 0;
+			// CONSTANT
+			for (int j = 0; j < (int)(sizeof(bi_constants) / sizeof(eme_con)); j++)
+				if (strcmp(bi_constants[j].desc, curr_str) == 0){ t.type = EME_TOKEN_TYPE_NUM; t.value = bi_constants[j].val; found = 1; break; }
+			// FUNCTION
+			if (!found)
+				for (int j = 0; j < (int)(sizeof(bi_functions) / sizeof(eme_fun)); j++)
+					if (strcmp(bi_functions[j].desc, curr_str) == 0){ t.type = EME_TOKEN_TYPE_FUN; t.prio = o_bra * bra_prio + fun_prio; t.value = j; found = 1; break; }
 		}
 		if (t.type != EME_TOKEN_TYPE_NUL){
 			tokens = realloc(tokens, (tok_num + 1) * sizeof(eme_tok));
@@ -182,7 +187,7 @@ double eme_eval(char *expr, int *err){
 		// NO OPEN BRACKET AFTER FUNCTION
 		if (t1 == EME_TOKEN_TYPE_FUN && (t2 != EME_TOKEN_TYPE_BRA || tokens[i + 1].value == ')')) valid = 0;
 	}
-	if (!valid){ *err = -1; return 0; }
+	if (!valid){ *err = (eme_err){.status = -1, .msg = "INVALID"}; return 0; }
 
 	/* --- LEXER --- */
 
@@ -195,9 +200,7 @@ double eme_eval(char *expr, int *err){
 			if (tokens[i].type == EME_TOKEN_TYPE_OPR && i > 0 && i < tok_num - 1 && tokens[i - 1].type == EME_TOKEN_TYPE_NUM && tokens[i + 1].type == EME_TOKEN_TYPE_NUM && tokens[i].prio == max_prio && op == 0){
 				// RESOLVE OPERATOR
 				new_tok.type = EME_TOKEN_TYPE_NUM;
-				for (int j = 0; j < (int)(sizeof(operators) / sizeof(eme_opr)); j++)
-					if (operators[j].desc == (int)tokens[i].value)
-						new_tok.value = operators[j].fun(tokens[i - 1].value, tokens[i + 1].value);
+				new_tok.value = bi_operators[(int)tokens[i].value].fun(tokens[i - 1].value, tokens[i + 1].value);
 				new_tokens[new_tok_num - 1] = new_tok;
 				i++; op = 1;
 			}else if (tokens[i].type == EME_TOKEN_TYPE_NUM && i > 0 && i < tok_num - 1 && tokens[i - 1].type == EME_TOKEN_TYPE_BRA && tokens[i + 1].type == EME_TOKEN_TYPE_BRA){
@@ -208,7 +211,7 @@ double eme_eval(char *expr, int *err){
 			}else if (tokens[i].type == EME_TOKEN_TYPE_NUM && i > 0 && tokens[i - 1].type == EME_TOKEN_TYPE_FUN && tokens[i - 1].prio == max_prio && op == 0){
 				// RESOLVE FUNCTION
 				new_tok.type = EME_TOKEN_TYPE_NUM;
-				new_tok.value = functions[(int)tokens[i - 1].value].fun(tokens[i].value);
+				new_tok.value = bi_functions[(int)tokens[i - 1].value].fun(tokens[i].value);
 				new_tokens[new_tok_num - 1] = new_tok;
 				op = 1;
 			}else{
@@ -223,7 +226,7 @@ double eme_eval(char *expr, int *err){
 		tok_num = new_tok_num;
 		free(new_tokens);
 	}
-	*err = 0;
+	*err = (eme_err){.status = 0, .msg = ""};
 	return tokens[0].value;
 }
 

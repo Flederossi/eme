@@ -32,14 +32,15 @@ test_case tc[] = {
 };
 
 int main(void){
-	int err, passed, passed_ges = 0, failed_ges = 0;
+	eme_err err;
+	int passed, passed_ges = 0, failed_ges = 0;
 	double res;
 
 	printf("\n");
 	for (int i = 0; i < (int)(sizeof(tc) / sizeof(test_case)); i++){
 		res = eme_eval(tc[i].expr, &err);
 		printf("TEST: %d/%d | EXPR: %s | EXP: %f | GOT: %f | ", i + 1, (int)(sizeof(tc) / sizeof(test_case)), tc[i].expr, tc[i].exp, res);
-		if (err < 0) passed = 0;
+		if (err.status < 0) passed = 0;
 		else if (fabs(res-tc[i].exp) < 0.000001) passed = 1;
 		else passed = 0;
 		if (passed) printf("\x1b[32mPASSED\x1b[0m\n");
