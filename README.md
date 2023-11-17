@@ -94,14 +94,11 @@ This lets you input math expressions like a calculator.
 
 ## Supported Built-Ins
 ### Operators
-| Operator | Description |
-| - | - |
-| `+` | Addition |
-| `-` | Subtraction |
-| `*` | Multiplication |
-| `/` | Division |
-| `^` | Power |
-| `%` | Modulo |
+| Operator | Description | Operator | Description |
+| - | - | - | - |
+| `+` | Addition | `-` | Subtraction |
+| `*` | Multiplication | `/` | Division |
+| `^` | Power | `%` | Modulo |
 
 ### Constants
 | Constant | Description |
@@ -111,21 +108,14 @@ This lets you input math expressions like a calculator.
 | `T` | Golden ratio |
 
 ### Functions
-| Function | Description |
-| - | - |
-| `sqrt()` | Square root |
-| `abs()` | Absolute value |
-| `sin()`| Sine |
-| `cos()` | Cosine |
-| `tan()` | Tangent |
-| `asin()`| Arcsine |
-| `acos()` | Arccosine |
-| `atan()` | Arctangent |
-| `ln()` | Natural logarithm |
-| `exp()` | e to the power off |
-| `ceil()` | Round up |
-| `floor()` | Round down |
-
+| Function | Description | Function | Description |
+| - | - | - | - |
+| `sqrt()` | Square root | `abs()` | Absolute value |
+| `sin()`| Sine | `asin()`| Arcsine |
+| `cos()` | Cosine | `acos()` | Arccosine |
+| `tan()` | Tangent | `atan()` | Arctangent |
+| `ln()` | Natural logarithm | `exp()` | e to the power off |
+| `ceil()` | Round up | `floor()` | Round down |
 
 <br>
 
