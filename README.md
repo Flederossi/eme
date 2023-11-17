@@ -10,9 +10,8 @@
 - Single-header
 - Supports standard math operators, constants and functions (`+`, `-`, `*`, `/`, `^`, `%`)
 - Implements standard precedence of operators
-- Supports some standard math constants (`E` - Euler's number, `P` - PI, `T` - Golden ratio)
 - Checks for invalid expressions
-- Easy to add custom operators and constants
+- Easy to add custom operators, constants and functions at compiletime
 
 <br>
 
