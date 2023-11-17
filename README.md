@@ -30,13 +30,13 @@ Just add [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h) to your proj
 #include "eme.h"
 
 int main(void){
-	int err;
+	eme_err err;
 
 	// Evaluate the result of the expression 5.43 + 5 * 5 + (2 ^ 4 + 1.5)
 	double res = eme_eval("5.43 + 5 * 5 + (2 ^ 4 + 1.5)", &err);
 
 	// Check if expression is invalid
-	if (err < 0) return 1;
+	if (err.status < 0) return 1;
 
 	// Output the result
 	printf("%f\n", res);
@@ -56,7 +56,7 @@ int main(void){
 ## API
 The function `double eme_eval` takes two arguments:
 - the expression (`char *`)
-- the error (`int *`)
+- the error (`eme_err *`)
 
 The error is set to -1 and the output to 0, if an invalid expression is detected. Otherwise the error is set to 0 and the output is the calculated result.
 
@@ -89,8 +89,8 @@ The error is set to -1 and the output to 0, if an invalid expression is detected
 
 <br>
 
-## Add custom operators and constants
-Custom operators and constants can be added by including them in the corresponding arrays (`operators`, `constants`) directly in [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h).
+## Add custom operators, constants and functions
+Custom operators, constants and functions can be added by including them in the corresponding arrays (`bi_operators`, `bi_constants`, `bi_functions`) directly in [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h).
 > Structure of an operator:
 ```c
 typedef struct _eme_opr {
@@ -102,9 +102,16 @@ typedef struct _eme_opr {
 > Structure of a constant:
 ```c
 typedef struct _eme_con {
-	char desc;			// The character used for the constant
+	char *desc;			// The string used as descriptor for the constant
 	double val;			// The value used for the constant
 } eme_con;
+```
+> Structure of a function:
+```c
+typedef struct _eme_fun {
+	char *desc;			// The string used as descriptor for the function
+	double (*fun)(double);		// The corresponding function pointer
+} eme_fun;
 ```
 
 <br>
