@@ -90,7 +90,7 @@ The error is set to -1 and the output to 0, if an invalid expression is detected
 <br>
 
 ## Add custom operators, constants and functions
-Custom operators, constants and functions can be added by including them in the corresponding arrays (`bi_operators`, `bi_constants`, `bi_functions`) directly in [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h).
+Custom operators, constants and functions can be added by including them in the corresponding arrays (`bi_operators`, `bi_constants`, `bi_functions`) directly in [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h). The `max_prio` variable needs to be adjusted, if a new operator with a higher priority then the other ones is added.
 > Structure of an operator:
 ```c
 typedef struct _eme_opr {
