@@ -16,10 +16,30 @@
 
 <br>
 
-## Supported built-ins
+## Supported Built-Ins
 ### Operators
+| Operator | Description |
 | - | - |
 | `+` | Addition |
+| `-` | Subtraction |
+| `*` | Multiplication |
+| `/` | Division |
+| `^` | Power |
+| `%` | Modulo |
+
+### Constants
+| Constant | Description |
+| - | - |
+| `PI` | PI |
+| `E` | Euler's number |
+| `T` | Golden ratio |
+
+### Functions
+| Function | Description |
+| - | - |
+| `sin()`| Sine |
+| `cos()` | Cosine |
+| `tan()` | Tangent |
 
 <br>
 
