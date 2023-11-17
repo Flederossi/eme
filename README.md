@@ -17,7 +17,7 @@
   - [Operators](#operators)
   - [Constants](#constants)
   - [Functions](#functions-1)
-- [Custom Objects](#add-custom-)
+- [Custom Objects](#add-custom-operators-constants-and-functions)
 
 <br>
 
