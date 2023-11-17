@@ -8,7 +8,7 @@
 ## Features
 - Written in pure C99
 - Single-header
-- Supports standard math operators, constants and functions (All built-ins [here](https://github.com/Flederossi/eme/blob/main/README.md#supported-built-ins))
+- Supports standard math operators, constants and functions (All built-ins [here](#supported-built-ins))
 - Implements standard precedence of operators
 - Checks for invalid expressions
 - Easy to add custom operators, constants and functions at compile- and runtime
