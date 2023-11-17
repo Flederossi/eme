@@ -72,8 +72,12 @@ const eme_con bi_constants[] = {
 };
 
 const eme_fun bi_functions[] = {
+	{"sqrt", &sqrt}, {"abs", &fabs},
 	{"sin", &sin}, {"cos", &cos},
-	{"tan", &tan},
+	{"tan", &tan}, {"asin", &asin},
+	{"acos", &acos}, {"atan", &atan},
+	{"ln", &log}, {"exp", &exp},
+	{"ceil", &ceil}, {"floor", &floor},
 };
 
 const int sign_prio = max_prio + 1;
