@@ -62,6 +62,17 @@ The error is set to -1 and the output to 0, if an invalid expression is detected
 
 <br>
 
+## REPL
+To test `eme` in your terminal, you can open a simple repl (after cloning the repo) by running:
+
+```sh
+make repl
+```
+
+This lets you input math expressions like a calculator.
+
+<br>
+
 ## Supported Built-Ins
 ### Operators
 | Operator | Description |
@@ -113,14 +124,3 @@ typedef struct _eme_fun {
 	double (*fun)(double);		// The corresponding function pointer
 } eme_fun;
 ```
-
-<br>
-
-## REPL
-To test `eme` in your terminal, you can open a simple repl (after cloning the repo) by running:
-
-```sh
-make repl
-```
-
-This lets you input math expressions like a calculator.
