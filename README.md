@@ -54,11 +54,19 @@ int main(void){
 <br>
 
 ## API
-The function `double eme_eval` takes two arguments:
-- the expression (`char *`)
-- the error (`eme_err *`)
+### Functions
+```c
+double eme_eval(char *expr, eme_err *err);	// Evaluate expression and return the result
+```
 
-The error is set to -1 and the output to 0, if an invalid expression is detected. Otherwise the error is set to 0 and the output is the calculated result.
+### Structures
+> Error
+```c
+typedef struct _eme_err {
+	int status;	// Return status of evaluation (0 - Successful, -1 - Error)
+	char *msg;	// Error message (empty if status is 0)
+} eme_err;
+```
 
 <br>
 
