@@ -15,33 +15,6 @@
 
 <br>
 
-## Supported Built-Ins
-### Operators
-| Operator | Description |
-| - | - |
-| `+` | Addition |
-| `-` | Subtraction |
-| `*` | Multiplication |
-| `/` | Division |
-| `^` | Power |
-| `%` | Modulo |
-
-### Constants
-| Constant | Description |
-| - | - |
-| `PI` | PI |
-| `E` | Euler's number |
-| `T` | Golden ratio |
-
-### Functions
-| Function | Description |
-| - | - |
-| `sin()`| Sine |
-| `cos()` | Cosine |
-| `tan()` | Tangent |
-
-<br>
-
 ## Building
 Just add [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h) to your project and you are ready to go!
 
@@ -86,6 +59,33 @@ The function `double eme_eval` takes two arguments:
 - the error (`int *`)
 
 The error is set to -1 and the output to 0, if an invalid expression is detected. Otherwise the error is set to 0 and the output is the calculated result.
+
+<br>
+
+## Supported Built-Ins
+### Operators
+| Operator | Description |
+| - | - |
+| `+` | Addition |
+| `-` | Subtraction |
+| `*` | Multiplication |
+| `/` | Division |
+| `^` | Power |
+| `%` | Modulo |
+
+### Constants
+| Constant | Description |
+| - | - |
+| `PI` | PI |
+| `E` | Euler's number |
+| `T` | Golden ratio |
+
+### Functions
+| Function | Description |
+| - | - |
+| `sin()`| Sine |
+| `cos()` | Cosine |
+| `tan()` | Tangent |
 
 <br>
 
