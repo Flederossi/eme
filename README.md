@@ -5,6 +5,12 @@
 
 `eme` is a minimal, linear, single-header parser and evaluation engine for simple math expressions. It supports standard mathematical operations such as addition, subtraction, multiplication and division as well as operators precedence. It is especially designed to evaluate math expressions at runtime.
 
+- [Features](#features)
+- [Building](#building)
+- [Example](#basic-example)
+- [API](#api)
+  - [Functions](#functions)
+
 ## Features
 - Written in pure C99
 - Single-header
