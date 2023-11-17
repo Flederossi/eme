@@ -88,7 +88,7 @@ int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
 	if (c == '(' || c == ')') return EME_TOKEN_TYPE_BRA;
 	for (int i = 0; i < (int)(sizeof(bi_operators) / sizeof(eme_opr)); i++) { if (c == bi_operators[i].desc) return EME_TOKEN_TYPE_OPR; }
-	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) return EME_TOKEN_TYPE_CHR;
+	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_') return EME_TOKEN_TYPE_CHR;
 	return EME_TOKEN_TYPE_NUL;
 }
 
