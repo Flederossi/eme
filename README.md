@@ -8,11 +8,18 @@
 ## Features
 - Written in pure C99
 - Single-header
-- Supports the standard math operators (`+`, `-`, `*`, `/`, `^`, `%`)
+- Supports standard math operators, constants and functions (`+`, `-`, `*`, `/`, `^`, `%`)
 - Implements standard precedence of operators
-- Supports some standard math constants (`e` - Euler's number, `p` - PI, `t` - Golden ratio)
+- Supports some standard math constants (`E` - Euler's number, `P` - PI, `T` - Golden ratio)
 - Checks for invalid expressions
 - Easy to add custom operators and constants
+
+<br>
+
+## Supported built-ins
+### Operators
+| - | - |
+| `+` | Addition |
 
 <br>
 
