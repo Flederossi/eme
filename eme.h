@@ -12,7 +12,6 @@ double eme_sub(double a, double b);
 double eme_mul(double a, double b);
 double eme_div(double a, double b);
 double eme_mod(double a, double b);
-double eme_sin(double a);
 int eme_tok_type(char c);
 double eme_eval(char *expr, int *err);
 
@@ -53,7 +52,6 @@ double eme_sub(double a, double b) { return a - b; }
 double eme_mul(double a, double b) { return a * b; }
 double eme_div(double a, double b) { return a / b; }
 double eme_mod(double a, double b) { return a - (int)(a / b) * b; }
-double eme_sin(double a) { return sin(a); }
 
 const eme_opr operators[] = {
 	{'+', 1, &eme_add}, {'-', 1, &eme_sub},
@@ -69,13 +67,13 @@ const eme_con constants[] = {
 };
 
 const eme_fun functions[] = {
-	{"sin", &eme_sin}, {"cos", &cos},
+	{"sin", &sin}, {"cos", &cos},
 	{"tan", &tan},
 };
 
 const int sign_prio = max_prio + 1;
 const int fun_prio = max_prio + 2;
-const int bra_prio = max_prio + 4;
+const int bra_prio = max_prio + 3;
 
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
