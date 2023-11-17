@@ -10,13 +10,8 @@
 - [Building](#building)
 - [Example](#basic-example)
 - [API](#api)
-  - [Functions](#functions)
-  - [Structures](#structures)
 - [REPL](#repl)
 - [Built-Ins](#supported-built-ins)
-  - [Operators](#operators)
-  - [Constants](#constants)
-  - [Functions](#functions-1)
 - [Custom Objects](#add-custom-operators-constants-and-functions)
 
 <br>
