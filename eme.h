@@ -5,6 +5,7 @@
 #include <strings.h>
 #include <math.h>
 
+
 /* --- DEFINITION --- */
 
 enum EME_TOKEN_TYPE {
@@ -49,9 +50,13 @@ double eme_div(double a, double b);
 double eme_mod(double a, double b);
 int eme_tok_type(char c);
 int eme_max_str();
+int eme_max_prio();
 double eme_eval(char *expr, eme_err *err);
 
+
 /* --- IMPLEMENTATION --- */
+
+/* -- BUILT-INS -- */
 
 double eme_add(double a, double b) { return a + b; }
 double eme_sub(double a, double b) { return a - b; }
@@ -64,12 +69,6 @@ const eme_opr bi_operators[] = {
 	{'*', 2, &eme_mul}, {'/', 2, &eme_div},
 	{'^', 3, &pow}, {'%', 2, &eme_mod},
 };
-
-const int max_prio = 3;
-
-const int sign_prio = max_prio + 1;
-const int fun_prio = max_prio + 2;
-const int bra_prio = max_prio + 3;
 
 const eme_con bi_constants[] = {
 	{"E", 2.71828183}, {"PI", 3.14159265},
@@ -84,6 +83,8 @@ const eme_fun bi_functions[] = {
 	{"ln", &log}, {"exp", &exp},
 	{"ceil", &ceil}, {"floor", &floor},
 };
+
+/* -- EME -- */
 
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
@@ -100,14 +101,26 @@ int eme_max_str(){
 	return max;
 }
 
+int eme_max_prio(){
+	int max = 0;
+	for (int i = 0; i < (int)(sizeof(bi_operators) / sizeof(eme_opr)); i++) if (bi_operators[i].prio > max) max = bi_operators[i].prio;
+	return max;
+}
+
 double eme_eval(char *expr, eme_err *err){
 
 	/* --- PARSER --- */
 	
+	const int max_str_len = eme_max_str();
+	const int max_opr_prio = eme_max_prio();
+	const int sign_prio = max_opr_prio + 1;
+	const int fun_prio = max_opr_prio + 2;
+	const int bra_prio = max_opr_prio + 3;
+	
 	char c;
 	eme_tok *tokens = malloc(0);
 	int tok_num = 0, o_bra = 0;
-	
+
 	for (int i = 0; i < (int)strlen(expr); i++){
 		c = expr[i];
 		eme_tok t = (eme_tok){.type = EME_TOKEN_TYPE_NUL};
@@ -144,7 +157,6 @@ double eme_eval(char *expr, eme_err *err){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
 		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_CHR){
-			int max_str_len = eme_max_str();
 			char curr_str[max_str_len + 1];
 			int curr_str_pos = 0;
 			memset(curr_str, 0, max_str_len + 1);
