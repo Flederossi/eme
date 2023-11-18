@@ -47,12 +47,21 @@ int main(void){
 		if (err.status < 0) passed = 0;
 		else if (fabs(res-tc[i].exp) < 0.000001) passed = 1;
 		else passed = 0;
+#if defined(_WIN32)
+		if (passed) printf("PASSED\n");
+		else printf("FAILED\n");
+#else
 		if (passed) printf("\x1b[32mPASSED\x1b[0m\n");
 		else printf("\x1b[31mFAILED\x1b[0m\n");
+#endif
 		passed_ges += passed;
 		failed_ges += !passed;
 	}
+#if defined(_WIN32)
+	printf("\n%d TESTS | %d PASSED | %d FAILED\n\n", (int)(sizeof(tc) / sizeof(test_case)), passed_ges, failed_ges);
+#else
 	printf("\n%d \x1b[36mTESTS\x1b[0m | %d \x1b[32mPASSED\x1b[0m | %d \x1b[31mFAILED\x1b[0m\n\n", (int)(sizeof(tc) / sizeof(test_case)), passed_ges, failed_ges);
+#endif
 
 	return 0;
 }

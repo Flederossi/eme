@@ -138,7 +138,6 @@ double eme_eval(char *expr, eme_err *err){
 				t.type = EME_TOKEN_TYPE_OPR;
 				for (int j = 0; j < (int)(sizeof(bi_operators) / sizeof(eme_opr)); j++)
 					if (c == bi_operators[j].desc){ t.prio = o_bra * bra_prio + bi_operators[j].prio; t.value = j; break; };
-
 			}
 		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_BRA){
 			// BRACKET
