@@ -48,6 +48,7 @@ double eme_mul(double a, double b);
 double eme_div(double a, double b);
 double eme_mod(double a, double b);
 int eme_tok_type(char c);
+int eme_max_str();
 double eme_eval(char *expr, eme_err *err);
 
 /* --- IMPLEMENTATION --- */
@@ -66,6 +67,10 @@ const eme_opr bi_operators[] = {
 
 const int max_prio = 3;
 
+const int sign_prio = max_prio + 1;
+const int fun_prio = max_prio + 2;
+const int bra_prio = max_prio + 3;
+
 const eme_con bi_constants[] = {
 	{"E", 2.71828183}, {"PI", 3.14159265},
 	{"T", 1.61803399},
@@ -80,16 +85,19 @@ const eme_fun bi_functions[] = {
 	{"ceil", &ceil}, {"floor", &floor},
 };
 
-const int sign_prio = max_prio + 1;
-const int fun_prio = max_prio + 2;
-const int bra_prio = max_prio + 3;
-
 int eme_tok_type(char c){
 	if (c >= '0' && c <= '9') return EME_TOKEN_TYPE_NUM;
 	if (c == '(' || c == ')') return EME_TOKEN_TYPE_BRA;
 	for (int i = 0; i < (int)(sizeof(bi_operators) / sizeof(eme_opr)); i++) { if (c == bi_operators[i].desc) return EME_TOKEN_TYPE_OPR; }
 	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_') return EME_TOKEN_TYPE_CHR;
 	return EME_TOKEN_TYPE_NUL;
+}
+
+int eme_max_str(){
+	int max = 0;
+	for (int i = 0; i < (int)(sizeof(bi_functions) / sizeof(eme_fun)); i++) if ((int)strlen(bi_functions[i].desc) > max) max = strlen(bi_functions[i].desc);
+	for (int i = 0; i < (int)(sizeof(bi_constants) / sizeof(eme_con)); i++) if ((int)strlen(bi_constants[i].desc) > max) max = strlen(bi_constants[i].desc);
+	return max;
 }
 
 double eme_eval(char *expr, eme_err *err){
@@ -137,17 +145,20 @@ double eme_eval(char *expr, eme_err *err){
 			t.type = EME_TOKEN_TYPE_BRA; t.value = c;
 			o_bra = c == '(' ? o_bra + 1 : o_bra - 1;
 		}else if (eme_tok_type(c) == EME_TOKEN_TYPE_CHR){
-			char *curr_str = malloc(sizeof(char));
-			curr_str[0] = c;
+			int max_str_len = eme_max_str();
+			char curr_str[max_str_len + 1];
+			int curr_str_pos = 0;
+			memset(curr_str, 0, max_str_len + 1);
+			curr_str[curr_str_pos] = c;
+			curr_str_pos++;
 			for (int j = i + 1; j < (int)strlen(expr); j++){
+				if (curr_str_pos == max_str_len) break;
 				c = expr[j];
-				if (eme_tok_type(c) == EME_TOKEN_TYPE_CHR){
-					curr_str = realloc(curr_str, (strlen(curr_str) + 1) * sizeof(char));
-					curr_str[strlen(curr_str)] = c;
-				}else{ i = j - 1; break; }
+				if (eme_tok_type(c) == EME_TOKEN_TYPE_CHR) curr_str[curr_str_pos] = c;
+				else{ i = j - 1; break; }
+				curr_str_pos++;
 			}
-			curr_str = realloc(curr_str, (strlen(curr_str) + 1) * sizeof(char));
-			curr_str[strlen(curr_str)] = '\0';
+			curr_str[curr_str_pos] = '\0';
 			int found = 0;
 			// CONSTANT
 			for (int j = 0; j < (int)(sizeof(bi_constants) / sizeof(eme_con)); j++)
@@ -163,6 +174,10 @@ double eme_eval(char *expr, eme_err *err){
 			tok_num++;
 		}
 	}
+
+	/*for (int i = 0; i < tok_num; i++){
+		printf("TYPE: %d PRIO: %d VALUE: %f\n", tokens[i].type, tokens[i].prio, tokens[i].value);
+	}*/
 
 	/* --- VALIDATOR --- */
 
