@@ -175,10 +175,6 @@ double eme_eval(char *expr, eme_err *err){
 		}
 	}
 
-	/*for (int i = 0; i < tok_num; i++){
-		printf("TYPE: %d PRIO: %d VALUE: %f\n", tokens[i].type, tokens[i].prio, tokens[i].value);
-	}*/
-
 	/* --- VALIDATOR --- */
 
 	int valid = 1;
