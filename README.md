@@ -34,23 +34,22 @@ Just add [eme.h](https://github.com/Flederossi/eme/blob/main/eme.h) to your proj
 ## Basic Example
 
 > This example can also be found [here](https://github.com/Flederossi/eme/blob/main/example.c).
-
 ```c
 #include <stdio.h>
 
 #include "eme.h"
 
 int main(void){
-	eme_err err;
 
 	// Evaluate the result of the expression 5.43 + 5 * 5 + (2 ^ 4 + 1.5)
-	double res = eme_eval("5.43 + 5 * 5 + (2 ^ 4 + 1.5)", &err);
+	eme_ret res = eme_eval("5.43 + 5 * 5 + (2 ^ 4 + 1.5)");
 
 	// Check if expression is invalid
-	if (err.status < 0) return 1;
+	if (res.err.status < 0) return 1;
 
 	// Output the result
-	printf("%f\n", res);
+	if (res.type == EME_RETURN_TYPE_NUM)
+		printf("%f\n", res.value);
 
 	return 0;
 }
@@ -67,10 +66,19 @@ int main(void){
 ## API
 ### Functions
 ```c
-double eme_eval(char *expr, eme_err *err);	// Evaluate expression and return the result
+eme_ret eme_eval(char *expr);	// Evaluate expression and return the result
 ```
 
 ### Structures
+> Return
+```c
+typedef struct _eme_ret {
+	double value;
+	int type;
+	eme_err err;
+} eme_ret;
+```
+
 > Error
 ```c
 typedef struct _eme_err {
@@ -99,6 +107,7 @@ This lets you input math expressions like a calculator.
 | `+` | Addition | `-` | Subtraction |
 | `*` | Multiplication | `/` | Division |
 | `^` | Power | `%` | Modulo |
+| `=` | Equal (Returns type bool) | | |
 
 ### Constants
 | Constant | Description |
@@ -106,6 +115,8 @@ This lets you input math expressions like a calculator.
 | `PI` | PI |
 | `E` | Euler's number |
 | `T` | Golden ratio |
+| `True` | = 1 |
+| `False` | = 0 |
 
 ### Functions
 | Function | Description | Function | Description |
@@ -114,8 +125,16 @@ This lets you input math expressions like a calculator.
 | `sin()`| Sine | `asin()`| Arcsine |
 | `cos()` | Cosine | `acos()` | Arccosine |
 | `tan()` | Tangent | `atan()` | Arctangent |
+| `sinh()` | Hyperbolic sine | `cosh()` | Hyperbolic cosine |
+| `tanh()` | Hyperbolic tangent | `asinh()` | Hyperbolic arcsine |
+| `acosh()` | Hyperbolic arccosine | `atanh()` | Hyperbolic arctangent |
+| `lb()` | Logarithm to base 2 | `lg()` | Logarithm to base 10 |
 | `ln()` | Natural logarithm | `exp()` | e to the power off |
 | `ceil()` | Round up | `floor()` | Round down |
+| `sgn()` | Sign (-1 or 1) | `round()` | Round |
+| `deg()` | Radians to degrees | `rad()` | Degrees to radians |
+| `frac()` | Fraction component | `trunc()` | Truncate after decimal point |
+| `cbrt()` | Cube root | | |
 
 <br>
 

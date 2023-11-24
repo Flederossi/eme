@@ -1,7 +1,7 @@
 .DS_Store
 example
 
-.swp
+*.swp
 
 # Prerequisites
 *.d
