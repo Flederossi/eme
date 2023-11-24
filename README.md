@@ -93,9 +93,9 @@ typedef struct _eme_err {
 ### States/Types
 > Return types
 ```c
-EME_RETURN_TYPE_NUM		// Normal double
+EME_RETURN_TYPE_NUM	// Normal double
 EME_RETURN_TYPE_BOOL	// Bool (0 or 1)
-EME_RETURN_TYPE_ERR		// Error
+EME_RETURN_TYPE_ERR	// Error
 ```
 
 <br>
