@@ -8,6 +8,8 @@
 
 /* --- DEFINITION --- */
 
+#define EME_PI 3.14159265
+
 enum EME_TOKEN_TYPE {
 	EME_TOKEN_TYPE_NUM,
 	EME_TOKEN_TYPE_OPR,
@@ -17,6 +19,12 @@ enum EME_TOKEN_TYPE {
 	EME_TOKEN_TYPE_NUL
 };
 
+enum EME_RETURN_TYPE {
+	EME_RETURN_TYPE_NUM,
+	EME_RETURN_TYPE_BOOL,
+	EME_RETURN_TYPE_ERR
+};
+
 typedef struct _eme_tok {
 	int type, prio;
 	double value;
@@ -24,7 +32,7 @@ typedef struct _eme_tok {
 
 typedef struct _eme_opr {
 	char desc;
-	int prio;
+	int prio, ret_type;
 	double (*fun)(double, double);
 } eme_opr;
 
@@ -43,15 +51,29 @@ typedef struct _eme_err {
 	char *msg;
 } eme_err;
 
+typedef struct _eme_ret {
+	double value;
+	int type;
+	eme_err err;
+} eme_ret;
+
 double eme_add(double a, double b);
 double eme_sub(double a, double b);
 double eme_mul(double a, double b);
 double eme_div(double a, double b);
 double eme_mod(double a, double b);
+double eme_equ(double a, double b);
+double eme_lb(double a);
+double eme_lg(double a);
+double eme_sgn(double a);
+double eme_deg(double a);
+double eme_rad(double a);
+double eme_frac(double a);
+
 int eme_tok_type(char c);
 int eme_max_str();
 int eme_max_prio();
-double eme_eval(char *expr, eme_err *err);
+eme_ret eme_eval(char *expr);
 
 
 /* --- IMPLEMENTATION --- */
@@ -63,16 +85,25 @@ double eme_sub(double a, double b) { return a - b; }
 double eme_mul(double a, double b) { return a * b; }
 double eme_div(double a, double b) { return a / b; }
 double eme_mod(double a, double b) { return a - (int)(a / b) * b; }
+double eme_equ(double a, double b) { return a == b; }
+double eme_lb(double a) { return log(a) / log(2); }
+double eme_lg(double a) { return log(a) / log(10); }
+double eme_sgn(double a) { return fabs(a) / a; }
+double eme_deg(double a) { return a * (180 / EME_PI); }
+double eme_rad(double a) { return a * (EME_PI / 180); }
+double eme_frac(double a) { return a - floor(a); }
 
 const eme_opr bi_operators[] = {
-	{'+', 1, &eme_add}, {'-', 1, &eme_sub},
-	{'*', 2, &eme_mul}, {'/', 2, &eme_div},
-	{'^', 3, &pow}, {'%', 2, &eme_mod},
+	{'=', 1, EME_RETURN_TYPE_BOOL, &eme_equ}, {'+', 2, EME_RETURN_TYPE_NUM, &eme_add},
+	{'-', 2, EME_RETURN_TYPE_NUM, &eme_sub}, {'*', 3, EME_RETURN_TYPE_NUM, &eme_mul},
+	{'/', 3, EME_RETURN_TYPE_NUM, &eme_div}, {'%', 3, EME_RETURN_TYPE_NUM, &eme_mod},
+	{'^', 4, EME_RETURN_TYPE_NUM, &pow},
 };
 
 const eme_con bi_constants[] = {
-	{"E", 2.71828183}, {"PI", 3.14159265},
-	{"T", 1.61803399},
+	{"E", 2.71828183}, {"PI", EME_PI},
+	{"T", 1.61803399}, {"True", 1},
+	{"False", 0},
 };
 
 const eme_fun bi_functions[] = {
@@ -80,8 +111,16 @@ const eme_fun bi_functions[] = {
 	{"sin", &sin}, {"cos", &cos},
 	{"tan", &tan}, {"asin", &asin},
 	{"acos", &acos}, {"atan", &atan},
+	{"sinh", &sinh}, {"cosh", &cosh},
+	{"tanh", &tanh}, {"asinh", &asinh},
+	{"acosh", &acosh}, {"atanh", &atanh},
 	{"ln", &log}, {"exp", &exp},
 	{"ceil", &ceil}, {"floor", &floor},
+	{"lb", &eme_lb}, {"lg", &eme_lg},
+	{"sgn", &eme_sgn}, {"round", &round},
+	{"deg", &eme_deg}, {"rad", &eme_rad},
+	{"frac", &eme_frac}, {"trunc", &floor},
+	{"cbrt", &cbrt}
 };
 
 /* -- EME -- */
@@ -107,7 +146,7 @@ int eme_max_prio(){
 	return max;
 }
 
-double eme_eval(char *expr, eme_err *err){
+eme_ret eme_eval(char *expr){
 
 	/* --- PARSER --- */
 	
@@ -213,10 +252,11 @@ double eme_eval(char *expr, eme_err *err){
 		// NO OPEN BRACKET AFTER FUNCTION
 		if (t1 == EME_TOKEN_TYPE_FUN && (t2 != EME_TOKEN_TYPE_BRA || tokens[i + 1].value == ')')) valid = 0;
 	}
-	if (!valid){ *err = (eme_err){.status = -1, .msg = "INVALID"}; return 0; }
+	if (!valid){ return (eme_ret){.value = 0, .type = EME_RETURN_TYPE_ERR, .err = (eme_err){.status = -1, .msg = "INVALID"}}; }
 
 	/* --- LEXER --- */
 
+	int ret_type = EME_RETURN_TYPE_NUM;
 	while (tok_num > 1){
 		eme_tok *new_tokens = malloc(0);
 		int new_tok_num = 0, max_prio = 0, op = 0;
@@ -228,6 +268,7 @@ double eme_eval(char *expr, eme_err *err){
 				new_tok.type = EME_TOKEN_TYPE_NUM;
 				new_tok.value = bi_operators[(int)tokens[i].value].fun(tokens[i - 1].value, tokens[i + 1].value);
 				new_tokens[new_tok_num - 1] = new_tok;
+				ret_type = bi_operators[(int)tokens[i].value].ret_type;
 				i++; op = 1;
 			}else if (tokens[i].type == EME_TOKEN_TYPE_NUM && i > 0 && i < tok_num - 1 && tokens[i - 1].type == EME_TOKEN_TYPE_BRA && tokens[i + 1].type == EME_TOKEN_TYPE_BRA){
 				// RESOLVE BRACKETS
@@ -252,8 +293,7 @@ double eme_eval(char *expr, eme_err *err){
 		tok_num = new_tok_num;
 		free(new_tokens);
 	}
-	*err = (eme_err){.status = 0, .msg = ""};
-	return tokens[0].value;
+	return (eme_ret){.value = tokens[0].value, .type = ret_type, .err = (eme_err){.status = 0, .msg = ""}};
 }
 
 #endif

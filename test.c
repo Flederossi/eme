@@ -36,16 +36,15 @@ test_case tc[] = {
 };
 
 int main(void){
-	eme_err err;
 	int passed, passed_ges = 0, failed_ges = 0;
-	double res;
+	eme_ret res;
 
 	printf("\n");
 	for (int i = 0; i < (int)(sizeof(tc) / sizeof(test_case)); i++){
-		res = eme_eval(tc[i].expr, &err);
-		printf("TEST: %d/%d | EXPR: %s | EXP: %f | GOT: %f | ", i + 1, (int)(sizeof(tc) / sizeof(test_case)), tc[i].expr, tc[i].exp, res);
-		if (err.status < 0) passed = 0;
-		else if (fabs(res-tc[i].exp) < 0.000001) passed = 1;
+		res = eme_eval(tc[i].expr);
+		printf("TEST: %d/%d | EXPR: %s | EXP: %f | GOT: %f | ", i + 1, (int)(sizeof(tc) / sizeof(test_case)), tc[i].expr, tc[i].exp, res.value);
+		if (res.type == EME_RETURN_TYPE_ERR) passed = 0;
+		else if (fabs(res.value-tc[i].exp) < 0.000001) passed = 1;
 		else passed = 0;
 #if defined(_WIN32)
 		if (passed) printf("PASSED\n");
