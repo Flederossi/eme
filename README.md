@@ -45,7 +45,10 @@ int main(void){
 	eme_ret res = eme_eval("5.43 + 5 * 5 + (2 ^ 4 + 1.5)");
 
 	// Check if expression is invalid
-	if (res.err.status < 0) return 1;
+	if (res.type == EME_RETURN_TYPE_ERR){
+		printf("%s\n", res.err.msg);
+		return 1;
+	}
 
 	// Output the result
 	if (res.type == EME_RETURN_TYPE_NUM)
@@ -73,18 +76,26 @@ eme_ret eme_eval(char *expr);	// Evaluate expression and return the result
 > Return
 ```c
 typedef struct _eme_ret {
-	double value;
-	int type;
-	eme_err err;
+	double value;	// Result of evaluation (1 or 0 if return type is bool)
+	int type;		// Type of result ([All types](#states/types))
+	eme_err err;	// Error struct (only relevant if type == EME_RETURN_TYPE_ERR)
 } eme_ret;
 ```
 
 > Error
 ```c
 typedef struct _eme_err {
-	int status;	// Return status of evaluation (0 - Successful, -1 - Error)
+	int status;	// Return status of evaluation (0 - Successful, -1 - Invalid expression)
 	char *msg;	// Error message (empty if status is 0)
 } eme_err;
+```
+
+### States/Types
+> Return types
+```c
+EME_RETURN_TYPE_NUM		// Normal double
+EME_RETURN_TYPE_BOOL	// Bool (0 or 1)
+EME_RETURN_TYPE_ERR		// Error
 ```
 
 <br>

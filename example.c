@@ -8,7 +8,10 @@ int main(void){
 	eme_ret res = eme_eval("5.43 + 5 * 5 + (2 ^ 4 + 1.5)");
 
 	// Check if expression is invalid
-	if (res.err.status < 0) return 1;
+	if (res.type == EME_RETURN_TYPE_ERR){
+		printf("%s\n", res.err.msg);
+		return 1;
+	}
 
 	// Output the result
 	if (res.type == EME_RETURN_TYPE_NUM)
