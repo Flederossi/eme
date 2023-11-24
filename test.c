@@ -33,6 +33,13 @@ test_case tc[] = {
 	{"PI*2^2", 12.566371}, {"sin(0)+cos(0)-tan(0)", 1},
 	{"ln(1)+exp(1)", 2.718282}, {"ceil(3.5) + floor(3.5)", 7},
 	{"sqrt(16)+abs(-5)-sin(0)", 9}, {"cos(0)*tan(0)/exp(1)+10%3", 1},
+	{"True", 1}, {"False", 0},
+	{"5=5", 1}, {"5+5*5=10+20", 1},
+	{"3=4", 0}, {"sin(rad(90))=cos(rad(0))", 1},
+	{"True=True", 1}, {"False=False", 1},
+	{"True=False", 0}, {"False=True", 0},
+	{"True=True=False", 0}, {"False=False=True", 1},
+	{"(5+5)*6=30*2=True", 1}, {"(5+5)*6=30=False", 1},
 };
 
 int main(void){
