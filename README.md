@@ -77,7 +77,7 @@ eme_ret eme_eval(char *expr);	// Evaluate expression and return the result
 ```c
 typedef struct _eme_ret {
 	double value;	// Result of evaluation (1 or 0 if return type is bool)
-	int type;		// Type of result ([All types](#states/types))
+	int type;	// Type of result
 	eme_err err;	// Error struct (only relevant if type == EME_RETURN_TYPE_ERR)
 } eme_ret;
 ```
