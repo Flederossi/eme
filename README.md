@@ -155,7 +155,7 @@ Custom operators, constants and functions can be added by including them in the 
 ```c
 typedef struct _eme_opr {
 	char desc;			// The character used as the operator
-	int prio;			// The priority used for precedence of operators
+	int prio, ret_type;		// The priority used for precedence of operators and the return type
 	double (*fun)(double, double);	// The corresponding function pointer to execute the operation
 } eme_opr;
 ```
