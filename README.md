@@ -118,7 +118,8 @@ This lets you input math expressions like a calculator.
 | `+` | Addition | `-` | Subtraction |
 | `*` | Multiplication | `/` | Division |
 | `^` | Power | `%` | Modulo |
-| `=` | Equal (Returns type bool) | | |
+| `=` | Equal (Returns type bool) | `<` | Less than (Returns type bool) |
+| `>` | Greater than (Returns type bool) | | |
 
 ### Constants
 | Constant | Description |
@@ -145,7 +146,7 @@ This lets you input math expressions like a calculator.
 | `sgn()` | Sign (-1 or 1) | `round()` | Round |
 | `deg()` | Radians to degrees | `rad()` | Degrees to radians |
 | `frac()` | Fraction component | `trunc()` | Truncate after decimal point |
-| `cbrt()` | Cube root | | |
+| `cbrt()` | Cube root | `fact()` | Factorial |
 
 <br>
 
