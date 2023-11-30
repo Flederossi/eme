@@ -57,18 +57,22 @@ typedef struct _eme_ret {
 	eme_err err;
 } eme_ret;
 
-double eme_add(double a, double b);
-double eme_sub(double a, double b);
-double eme_mul(double a, double b);
-double eme_div(double a, double b);
-double eme_mod(double a, double b);
-double eme_equ(double a, double b);
-double eme_lb(double a);
-double eme_lg(double a);
-double eme_sgn(double a);
-double eme_deg(double a);
-double eme_rad(double a);
-double eme_frac(double a);
+double eme_opr_add(double a, double b);
+double eme_opr_sub(double a, double b);
+double eme_opr_mul(double a, double b);
+double eme_opr_div(double a, double b);
+double eme_opr_mod(double a, double b);
+double eme_opr_equ(double a, double b);
+double eme_opr_lss(double a, double b);
+double eme_opr_grt(double a, double b);
+
+double eme_fun_lb(double a);
+double eme_fun_lg(double a);
+double eme_fun_sgn(double a);
+double eme_fun_deg(double a);
+double eme_fun_rad(double a);
+double eme_fun_frac(double a);
+double eme_fun_fact(double a);
 
 int eme_tok_type(char c);
 int eme_max_str();
@@ -80,23 +84,28 @@ eme_ret eme_eval(char *expr);
 
 /* -- BUILT-INS -- */
 
-double eme_add(double a, double b) { return a + b; }
-double eme_sub(double a, double b) { return a - b; }
-double eme_mul(double a, double b) { return a * b; }
-double eme_div(double a, double b) { return a / b; }
-double eme_mod(double a, double b) { return a - (int)(a / b) * b; }
-double eme_equ(double a, double b) { return a == b; }
-double eme_lb(double a) { return log(a) / log(2); }
-double eme_lg(double a) { return log(a) / log(10); }
-double eme_sgn(double a) { return fabs(a) / a; }
-double eme_deg(double a) { return a * (180 / EME_PI); }
-double eme_rad(double a) { return a * (EME_PI / 180); }
-double eme_frac(double a) { return a - floor(a); }
+double eme_opr_add(double a, double b) { return a + b; }
+double eme_opr_sub(double a, double b) { return a - b; }
+double eme_opr_mul(double a, double b) { return a * b; }
+double eme_opr_div(double a, double b) { return a / b; }
+double eme_opr_mod(double a, double b) { return a - (int)(a / b) * b; }
+double eme_opr_equ(double a, double b) { return fabs(a - b) < 0.000001; }
+double eme_opr_lss(double a, double b) { return a < b; }
+double eme_opr_grt(double a, double b) { return a > b; }
+
+double eme_fun_lb(double a) { return log(a) / log(2); }
+double eme_fun_lg(double a) { return log(a) / log(10); }
+double eme_fun_sgn(double a) { return fabs(a) / a; }
+double eme_fun_deg(double a) { return a * (180 / EME_PI); }
+double eme_fun_rad(double a) { return a * (EME_PI / 180); }
+double eme_fun_frac(double a) { return a - floor(a); }
+double eme_fun_fact(double a) { int f = 1; for(int i = 1; i <= (int)a; i++) f *= i; return f; }
 
 const eme_opr bi_operators[] = {
-	{'=', 1, EME_RETURN_TYPE_BOOL, &eme_equ}, {'+', 2, EME_RETURN_TYPE_NUM, &eme_add},
-	{'-', 2, EME_RETURN_TYPE_NUM, &eme_sub}, {'*', 3, EME_RETURN_TYPE_NUM, &eme_mul},
-	{'/', 3, EME_RETURN_TYPE_NUM, &eme_div}, {'%', 3, EME_RETURN_TYPE_NUM, &eme_mod},
+	{'=', 1, EME_RETURN_TYPE_BOOL, &eme_opr_equ}, {'<', 1, EME_RETURN_TYPE_BOOL, &eme_opr_lss},
+	{'>', 1, EME_RETURN_TYPE_BOOL, &eme_opr_grt}, {'+', 2, EME_RETURN_TYPE_NUM, &eme_opr_add},
+	{'-', 2, EME_RETURN_TYPE_NUM, &eme_opr_sub}, {'*', 3, EME_RETURN_TYPE_NUM, &eme_opr_mul},
+	{'/', 3, EME_RETURN_TYPE_NUM, &eme_opr_div}, {'%', 3, EME_RETURN_TYPE_NUM, &eme_opr_mod},
 	{'^', 4, EME_RETURN_TYPE_NUM, &pow},
 };
 
@@ -107,20 +116,13 @@ const eme_con bi_constants[] = {
 };
 
 const eme_fun bi_functions[] = {
-	{"sqrt", &sqrt}, {"abs", &fabs},
-	{"sin", &sin}, {"cos", &cos},
-	{"tan", &tan}, {"asin", &asin},
-	{"acos", &acos}, {"atan", &atan},
-	{"sinh", &sinh}, {"cosh", &cosh},
-	{"tanh", &tanh}, {"asinh", &asinh},
-	{"acosh", &acosh}, {"atanh", &atanh},
-	{"ln", &log}, {"exp", &exp},
-	{"ceil", &ceil}, {"floor", &floor},
-	{"lb", &eme_lb}, {"lg", &eme_lg},
-	{"sgn", &eme_sgn}, {"round", &round},
-	{"deg", &eme_deg}, {"rad", &eme_rad},
-	{"frac", &eme_frac}, {"trunc", &floor},
-	{"cbrt", &cbrt}
+	{"sqrt", &sqrt}, {"abs", &fabs}, {"sin", &sin}, {"cos", &cos},
+	{"tan", &tan}, {"asin", &asin}, {"acos", &acos}, {"atan", &atan},
+	{"sinh", &sinh}, {"cosh", &cosh}, {"tanh", &tanh}, {"asinh", &asinh},
+	{"acosh", &acosh}, {"atanh", &atanh}, {"ln", &log}, {"exp", &exp},
+	{"ceil", &ceil}, {"floor", &floor}, {"lb", &eme_fun_lb}, {"lg", &eme_fun_lg},
+	{"sgn", &eme_fun_sgn}, {"round", &round}, {"deg", &eme_fun_deg}, {"rad", &eme_fun_rad},
+	{"frac", &eme_fun_frac}, {"trunc", &floor}, {"cbrt", &cbrt}, {"fact", &eme_fun_fact},
 };
 
 /* -- EME -- */
