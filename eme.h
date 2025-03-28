@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <strings.h>
 #include <math.h>
+#include <string.h>
 
 
 /* --- DEFINITION --- */
